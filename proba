@@ -1,0 +1,108 @@
+
+require_once ABSPATH . 'wp-admin/includes/post.php';
+
+function support(){
+    add_theme_support('title-tag');
+    add_theme_support('post-thumbnails');
+}
+add_action('after_setup_theme','support');
+
+function load_custom_style() {
+    wp_enqueue_style('custom', get_template_directory_uri() . "/style.css", array(), '1.0', 'all');
+}
+add_action('wp_enqueue_scripts', 'load_custom_style');
+
+function create_posttype() {
+    register_post_type('movies',
+        array(
+            'labels' => array(
+                'name' => __('Proba'),
+                'singular_name' => __('Proba')
+            ),
+            'public' => true,
+            'has_archive' => true,
+            'rewrite' => array('slug' => 'movies'),
+            'show_in_rest' => true,
+            'supports' => array('title', 'editor', 'thumbnail'),
+        )
+    );
+}
+add_action('init', 'create_posttype');
+
+add_action('init', 'get_github_repos');
+function get_github_repos(){
+    $githubUsername = 'laravel';
+    $page = 1;
+    $per_page = 100;
+
+    do {
+        $reposURL = "https://api.github.com/users/{$githubUsername}/repos?page={$page}&per_page={$per_page}";
+
+        $ch = curl_init($reposURL);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            'User-Agent: PHP',
+            "Authorization: Bearer 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",
+            "Accept: application/vnd.github.v3+json"
+        ]);
+        $rawResponse = curl_exec($ch);
+        $reposData = json_decode($rawResponse, true);
+        $curlError = curl_error($ch);
+        curl_close($ch);
+
+        require_once 'C:\xampp\htdocs\wordpress\wp-content\themes\git\parsedown.php';
+        $parsedown = new Parsedown();
+
+        foreach ($reposData as $repo) {
+            $token = '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';
+            $readeMeUrl = "https://api.github.com/repos/{$githubUsername}/{$repo['name']}/contents/README.md";
+
+            $headers = [
+                'Authorization' => 'token ' . $token,
+                'User-Agent' => 'YourApp',
+            ];
+
+            $response = wp_remote_get($readeMeUrl, array(
+                'headers' => $headers,
+            ));
+
+            $redaMeData = json_decode(wp_remote_retrieve_body($response));
+
+            $existing_post = get_page_by_title($repo['name'], OBJECT, 'movies');
+
+            if (!$existing_post) {
+                if (!empty($redaMeData->content)) {
+                    $readeMeMd = base64_decode($redaMeData->content);
+                    $readeMeHtml = $parsedown->text($readeMeMd);
+
+                    $post_data = array(
+                        'post_title' => $repo['name'],
+                        'post_content' => $readeMeHtml,
+                        'post_status' => 'publish',
+                        'post_author' => 1,
+                        'post_type' => 'movies',
+                    );
+
+                    $post_id = wp_insert_post($post_data);
+
+                   
+                }
+            } else {
+                if (!empty($redaMeData->content)) {
+                    $readeMeMd = base64_decode($redaMeData->content);
+                    $readeMeHtml = $parsedown->text($readeMeMd);
+
+                    $updated_post_data = array(
+                        'ID' => $existing_post->ID,
+                        'post_content' => $readeMeHtml,
+                    );
+
+                    wp_update_post($updated_post_data);
+                }
+            }
+        }
+
+        $page++;
+    } while (!empty($reposData));
+}
+?>

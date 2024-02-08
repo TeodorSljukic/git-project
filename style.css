@@ -1,0 +1,129 @@
+/* Theme Name : Blog2
+Text Domain: Blog2
+
+Version:1.0
+Description Blog
+Tags: fancy
+Author: ja */
+@media screen {
+  html {
+    margin-top: 0px !important;
+  }
+}
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  text-decoration: none;
+  background: transparent;
+}
+
+body {
+  font-family: "Inter", sans-serif;
+  font-size: 16px;
+  scroll-behavior: smooth;
+  line-height: 1.7;
+  overflow-x: hidden;
+  margin: 0;
+}
+.container {
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+}
+.header-img img {
+  width: 100%;
+  height: 100%;
+}
+.text {
+  width: 50%;
+  display: flex;
+
+  text-align: left;
+  justify-content: center;
+  direction: revert;
+  flex-direction: column;
+  background-color: #21262d;
+  align-content: center;
+  align-items: center;
+}
+.text-1 {
+  width: 100%;
+  display: flex;
+  margin-bottom: 20px;
+  text-align: left;
+  justify-content: center;
+  direction: revert;
+  flex-direction: column;
+  background-color: #21262d;
+  align-content: center;
+  align-items: center;
+  height: 200px;
+}
+h1 {
+  color: white;
+}
+p {
+  color: white;
+  width: 80%;
+}
+.photo {
+  width: 50%;
+}
+.posts {
+  width: 100%;
+}
+.post {
+  width: 100%;
+  display: flex;
+}
+.post-1 {
+  width: 100%;
+}
+.photo img {
+  width: 100%;
+  height: 100%;
+}
+.photo-1 img {
+  width: 100%;
+  height: 100%;
+}
+.back {
+  height: 100px;
+  /* background-color: #3076e4; */
+}
+
+.posts {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.post {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.post-left .text {
+  order: 2;
+}
+
+.post-left .photo {
+  order: 1;
+}
+
+.post-right .text {
+  order: 1;
+}
+
+.post-right .photo {
+  order: 2;
+}
+
+.text,
+.photo {
+  width: 50%;
+  box-sizing: border-box;
+}
+h1 {
+  text-align: center;
+}
